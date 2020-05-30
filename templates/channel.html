@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Flack | Create Channel
+{% endblock %}
+
+
+{% block body %}
+
+
+<div class="container">
+    <div class="login-form" style="padding-top: 300px; clear: both;">
+        {% if message  %}
+        <div class="text-capitalize text-danger m-3">{{ message }}</div>
+        {% endif %}
+        <form action="" method="POST">
+            <input id="channel" name="channel" type="text">
+            <button id="createChannel" type="submit">ENter </button>
+        </form>
+        <!-- Flash error messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <p class=formError>{{ messages[0] }}</p>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+<script>
+
+
+    var createUser = document.querySelector('#createChannel');
+
+
+
+    createUser.onclick = () => {
+        let channel = document.querySelector('#channel').value;
+        localStorage.setItem('channel', channel);
+        joinRoom(channel);
+
+    };
+
+
+
+</script>
+{% endblock %}
