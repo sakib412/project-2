@@ -11,12 +11,14 @@ Flack
 
 <!-- Nav bar end -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
 <!-- Main section start -->
 <div id="main-section">
 
     <!-- Sidebar start -->
     <nav id="sidebar">
         <h4>Channels</h4>
+
 
         {% for channel in channels %}
         <p id="{{ channel }}" class="select-room cursor-pointer">{{ channel }}</p>
@@ -29,6 +31,7 @@ Flack
 
         <!-- Display message start-->
         <div id="display-message-section">
+
 
         </div>
 

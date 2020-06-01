@@ -21,7 +21,30 @@ document.addEventListener('DOMContentLoaded',() => {
             // Autofocus on text box
             document.querySelector("#user_message").focus();
         };  
+        document.addEventListener('click', event => {
+            const element = event.target;
+            if (element.className === 'hide') {
+                var mid = element.parentElement.getAttribute('data-id');
+                console.log(element.parentElement);
+
+                socket.emit("delete_message",{"msgid": mid, "room":channel});
+                //element.parentElement.style.animationPlayState = 'running';
+                //element.parentElement.remove();
+                // element.parentElement.addEventListener('animationend', () =>  {
+                //     element.parentElement.remove();
+                // });
+            }
+        });
          
+    });
+    socket.on("deleted", data => {
+
+        var messageown = document.querySelector('p[data-id="' + data + '"]');
+
+        messageown.remove();
+
+        
+        
     });
 
 
@@ -46,12 +69,14 @@ document.addEventListener('DOMContentLoaded',() => {
         const span_username = document.createElement('span');
         const span_timestamp = document.createElement('span');
         const br = document.createElement('br');
+        const delete_button = document.createElement('button');
         const Name = username;
 
         if(oldmessages[i].username== Name){
         // Display user's own message
 
         p.setAttribute("class", "my-msg");
+        p.setAttribute("data-id",oldmessages[i].msgID);
 
         // Username
         span_username.setAttribute("class", "my-username");
@@ -61,8 +86,13 @@ document.addEventListener('DOMContentLoaded',() => {
         span_timestamp.setAttribute("class", "timestamp");
         span_timestamp.innerText = oldmessages[i].time_stamp;
 
+
+        // Delete Button
+        delete_button.setAttribute("class","hide");
+        delete_button.innerText = "Delete";
+
         // HTML to append
-        p.innerHTML += span_username.outerHTML + br.outerHTML + oldmessages[i].msg + br.outerHTML + span_timestamp.outerHTML;
+        p.innerHTML += span_username.outerHTML + br.outerHTML + oldmessages[i].msg + br.outerHTML + span_timestamp.outerHTML + delete_button.outerHTML;
 
         //Append
         document.querySelector('#display-message-section').append(p);
@@ -71,6 +101,7 @@ document.addEventListener('DOMContentLoaded',() => {
             // Display other's message
 
         p.setAttribute("class", "others-msg");
+        p.setAttribute("data-id",oldmessages[i].msgID);
 
         // Username
         span_username.setAttribute("class", "my-username");
@@ -149,12 +180,14 @@ document.addEventListener('DOMContentLoaded',() => {
         const span_username = document.createElement('span');
         const span_timestamp = document.createElement('span');
         const br = document.createElement('br');
+        const delete_button = document.createElement('button');
         const Name = username;
-
+        console.log(data.ooo);
         if(data.username== Name){
         // Display user's own message
 
         p.setAttribute("class", "my-msg");
+        p.setAttribute("data-id",data.msgID);
 
         // Username
         span_username.setAttribute("class", "my-username");
@@ -164,8 +197,13 @@ document.addEventListener('DOMContentLoaded',() => {
         span_timestamp.setAttribute("class", "timestamp");
         span_timestamp.innerText = data.time_stamp;
 
+        // Delete Button
+        delete_button.setAttribute("class","hide");
+        delete_button.innerText = "Delete";
+
+
         // HTML to append
-        p.innerHTML += span_username.outerHTML + br.outerHTML + data.message + br.outerHTML + span_timestamp.outerHTML;
+        p.innerHTML += span_username.outerHTML + br.outerHTML + data.message + br.outerHTML + span_timestamp.outerHTML + delete_button.outerHTML;
 
         //Append
         document.querySelector('#display-message-section').append(p);
@@ -174,6 +212,7 @@ document.addEventListener('DOMContentLoaded',() => {
               // Display other's message
 
         p.setAttribute("class", "others-msg");
+        p.setAttribute("data-id",data.msgID);
 
         // Username
         span_username.setAttribute("class", "my-username");

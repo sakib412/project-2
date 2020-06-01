@@ -48,7 +48,7 @@
                 {% if username %}
                 <div class="nav-item ml-auto"><a class="text-white" role="button" id="logout-btn"
                         href="{{ url_for('logout') }}">
-                        Logout</a>
+                        Logout</a><span class="text-success">( {{ username }})</span> 
                 </div>
                 {% endif %}
             </div>

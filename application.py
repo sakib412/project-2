@@ -1,6 +1,7 @@
 import os
 import time
 import json
+import random
 from time import localtime, strftime
 from flask import Flask, render_template, request, session, redirect, flash
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
@@ -36,6 +37,9 @@ def index():
     if not username:
         flash("Login First")
         return redirect('/login')
+    if not session.get('current_channel') in channelsCreated:
+        return render_template("index.html")
+
     current_channel = session.get('current_channel')
     return render_template("index.html", channels = channelsCreated, username =username, msg=channelsMessages[current_channel], current_channel= current_channel)
 
@@ -106,6 +110,9 @@ def createChannel():
     session['current_channel'] = newChannel
 
     if request.method == "POST":
+        if newChannel == '':
+            flash("Please input a channel name.")
+            return render_template("channel.html")
 
         if newChannel in channelsCreated:
             flash("That channel already exists!")
@@ -122,7 +129,7 @@ def createChannel():
     
     else:
 
-        return render_template("channel.html", channels = channelsCreated)
+        return render_template("channel.html", channels = channelsCreated, username= username)
 
 
 
@@ -164,19 +171,36 @@ def text(data):
     msg = data["msg"]
     channel = data["channel"]
     time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime())
+    s = random.sample(range(1, 510078668686788), 1)
+    mID = ''.join([str(elem) for elem in s])
+    msgID = int(mID)
     if msg=='':
         return render_template("index.html")
 
 
     
-    if len(channelsMessages[channel]) > 100:
+    if len(channelsMessages[channel]) > 99:
         # Pop the oldest message
-        channelsMessages[channel].popleft()
+        channelsMessages[channel].pop(0)
 
     
-    my_data = {"username": session.get('username'), "msg" : msg, "time_stamp": time_stamp}
+    my_data = {"msgID":msgID,"username": session.get('username'), "msg" : msg, "time_stamp": time_stamp}
     channelsMessages[channel].append(my_data)
 
 
     
-    emit("mtext", {"username": session.get('username'),"message":msg,"time_stamp": time_stamp}, room = channel)
+    emit("mtext", {"msgID":msgID,"username": session.get('username'),"message":msg,"time_stamp": time_stamp,"ooo":channelsMessages, "channel": channel}, room = channel)
+
+@socketio.on("delete_message")
+def delete_message(data):
+    msid = data["msgid"]
+    
+    msgid = int(msid)
+    room = data["room"]
+    room_msg = channelsMessages[room]
+
+    for i, msg in enumerate(room_msg):
+        if msg['msgID'] == msgid:
+            del room_msg[i]
+    print("HEyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
+    emit("deleted", msgid, room = room)

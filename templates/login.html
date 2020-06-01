@@ -13,9 +13,10 @@ Flack | Login
         {% if message  %}
         <div class="text-capitalize text-danger m-3">{{ message }}</div>
         {% endif %}
-        <form action="{{ url_for('login') }}" method="POST">
-            <input id="username5" name="username" type="text">
-            <button id="createUser" type="submit">ENter </button>
+        <form class="form-group" action="{{ url_for('login') }}" method="POST">
+            <label for="username5">Display Name</label>
+            <input class="form-control" id="username5" name="username" type="text">
+            <button class="btn btn-primary mb-2" id="createUser" type="submit">Login </button>
         </form>
          <!-- Flash error messages -->
  {% with messages = get_flashed_messages() %}

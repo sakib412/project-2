@@ -9,13 +9,15 @@ Flack | Create Channel
 
 
 <div class="container">
-    <div class="login-form" style="padding-top: 300px; clear: both;">
+    <div class="login-form" style="padding-top: 250px; clear: both;">
         {% if message  %}
         <div class="text-capitalize text-danger m-3">{{ message }}</div>
         {% endif %}
-        <form action="" method="POST">
-            <input id="channel" name="channel" type="text">
-            <button id="createChannel" type="submit">ENter </button>
+
+        <form class="form-group" action="{{ url_for('createChannel') }}" method="POST">
+            <label for="channel">Channel Name</label>
+            <input class="form-control" id="channel" name="channel" type="text">
+            <button id="createChannel" class="btn btn-primary mb-2" type="submit">Enter </button>
         </form>
         <!-- Flash error messages -->
         {% with messages = get_flashed_messages() %}
